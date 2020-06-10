@@ -1,4 +1,3 @@
-
 import 'package:bloc_todo_sample/application/todo_timer/todo_timer_bloc.dart';
 import 'package:bloc_todo_sample/domain/todos/todo.dart';
 import 'package:dartz/dartz.dart';
@@ -20,15 +19,17 @@ class NewTimerPage extends HookWidget {
   Widget build(BuildContext context) {
     return BlocProvider<TodoTimerBloc>(
       create: (context) => getIt<TodoTimerBloc>()
-          ..add(TodoTimerEvent.initialized(optionOf(selectedTodo))),
+        ..add(TodoTimerEvent.initialized(optionOf(selectedTodo))),
       child: BlocBuilder<TodoTimerBloc, TodoTimerState>(
         builder: (context, state) {
           return Stack(
             children: <Widget>[
-              TimerFormScaffold(),
+              state.todo.failureOption.isNone()
+                  ? TimerFormScaffold()
+                  : const SizedBox(),
             ],
           );
-        }
+        },
       ),
     );
   }
@@ -40,10 +41,10 @@ class TimerFormScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: BlocBuilder<TodoTimerBloc, TodoTimerState>(
-          builder: (context, state){
+          builder: (context, state) {
             return Text(state.todo.name.getOrCrash());
           },
-        )
+        ),
       ),
     );
   }
